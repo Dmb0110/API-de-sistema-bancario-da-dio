@@ -1,3 +1,4 @@
+'''
 from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 from app.models.models_bancario import SessionLocal
@@ -40,3 +41,7 @@ class ContaOut(BaseModel):
     saldo: float
     titular: str
     historico: List[TransacaoOut]
+
+class DeletarConta(BaseModel):
+    mensgem: str
+    '''

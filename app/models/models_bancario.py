@@ -1,3 +1,5 @@
+
+'''
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, create_engine
 from sqlalchemy.orm import relationship, declarative_base, sessionmaker, Session
 from datetime import datetime
@@ -41,3 +43,4 @@ class Transacao(Base):
     conta = relationship("Conta", back_populates="transacoes")
 
 Base.metadata.create_all(bind=engine)
+'''

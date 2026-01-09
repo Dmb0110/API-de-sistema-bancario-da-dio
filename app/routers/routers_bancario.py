@@ -1,3 +1,4 @@
+'''
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.models.models_bancario import Cliente, Conta, Transacao 
@@ -9,6 +10,7 @@ router = APIRouter()
 def criar_cliente(cliente: ClienteIn, session: Session = Depends(get_session)):
     if session.query(Cliente).filter_by(cpf=cliente.cpf).first():
         raise HTTPException(status_code=400, detail="Cliente já existe")
+    
     novo = Cliente(**cliente.dict())
     session.add(novo)
     session.commit()
@@ -20,8 +22,10 @@ def criar_conta(conta: ContaIn, session: Session = Depends(get_session)):
     cliente = session.query(Cliente).filter_by(cpf=conta.cpf_cliente).first()
     if not cliente:
         raise HTTPException(status_code=404, detail="Cliente não encontrado")
+    
     if session.query(Conta).filter_by(numero=conta.numero).first():
         raise HTTPException(status_code=400, detail="Conta já existe")
+    
     nova = Conta(numero=conta.numero, cliente_id=cliente.id)
     session.add(nova)
     session.commit()
@@ -43,7 +47,10 @@ def realizar_transacao(transacao: TransacaoIn, session: Session = Depends(get_se
     else:
         raise HTTPException(status_code=400, detail="Tipo inválido")
 
-    nova_transacao = Transacao(tipo_de_transacao=transacao.tipo_de_transacao, valor=transacao.valor, conta_id=conta.id)
+    nova_transacao = Transacao(
+        tipo_de_transacao=transacao.tipo_de_transacao,
+          valor=transacao.valor, conta_id=conta.id
+        )
     session.add(nova_transacao)
     session.commit()
     return {"mensagem": f"{transacao.tipo_de_transacao.capitalize()} realizado com sucesso"}
@@ -63,3 +70,4 @@ def consultar_conta(numero: int, session: Session = Depends(get_session)):
             for t in conta.transacoes
         ]
     )
+'''

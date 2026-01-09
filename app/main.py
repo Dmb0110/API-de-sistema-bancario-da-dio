@@ -1,18 +1,21 @@
 from fastapi import FastAPI
-from app.models.models_bancario import engine, Base
-from app.routers.routers_bancario import router
+from app.database.session import Base, engine
+from app.rotas_principais import api_router
 
 app = FastAPI(
-    tittle='API de sistema bancario',
-    description='Gerenciador de sistema bancario',
-    version='1.0.0',
-    docs_url='/docs',
-    redoc_url='/redoc'
+    title="API de sistema bancário",
+    description="Gerenciador de sistema bancário",
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
-# Isso é útil para inicializar o banco automaticamente, mas em produção é melhor usar migrations (Alembic).
+# Inicializa o banco de forma assíncrona
 @app.on_event("startup")
-def startup_event():
-    Base.metadata.create_all(bind=engine)
+async def startup_event():
+    async with engine.begin() as conn:
+        # Cria as tabelas se não existirem
+        await conn.run_sync(Base.metadata.create_all)
 
-app.include_router(router)
+# Inclui as rotas definidas em routers_bancario
+app.include_router(api_router)
