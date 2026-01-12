@@ -39,17 +39,18 @@
       background: #0099ff;
     }
 
-    h1 {
+    header h1 {
       margin: 0 auto;
       text-align: center;
       flex-grow: 1;
+      color: white; /* título branco */
     }
 
     .container {
       margin: 100px auto 30px auto;
-      width: 600px;
+      width: 450px;          /* largura mais curta */
       background: white;
-      padding: 20px;
+      padding: 15px;         /* menos espaçamento interno */
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
@@ -73,8 +74,8 @@
       margin-top: 20px;
       width: 100%;
       padding: 12px;
-      background: #4facfe;
-      color: white;
+      background: #004080;   /* fundo azul */
+      color: white;          /* texto branco */
       border: none;
       border-radius: 5px;
       font-size: 16px;
@@ -83,7 +84,7 @@
     }
 
     button:hover {
-      background: #00c6fb;
+      background: #0066cc;   /* azul mais claro ao passar o mouse */
     }
 
     #listaClientes, #resultado {
@@ -119,9 +120,8 @@
 
   <script>
     const CLIENTES_URL = "http://localhost:8000/get/clientes";
-    const CLIENTE_URL = "http://localhost:8000/get/cliente"; // rota para cliente específico
+    const CLIENTE_URL = "http://localhost:8000/get/cliente";
 
-    // Listar todos os clientes (apenas IDs)
     async function listarClientes() {
       try {
         const resp = await fetch(CLIENTES_URL);
@@ -135,14 +135,12 @@
           return;
         }
 
-        // Mostra ID e Nome para facilitar
         listaDiv.innerHTML = clientes.map(c => `<p><strong>ID:</strong> ${c.id} | <strong>Nome:</strong> ${c.nome}</p>`).join("");
       } catch (error) {
         document.getElementById("listaClientes").textContent = "Erro: " + error.message;
       }
     }
 
-    // Buscar cliente por ID e mostrar suas contas
     async function buscarCliente(id) {
       try {
         const respCliente = await fetch(`${CLIENTE_URL}/${id}`);

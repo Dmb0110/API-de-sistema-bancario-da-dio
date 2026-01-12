@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Criar Cliente</title>
+  <title>Cadastro de Usuário</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,18 +16,25 @@
     }
 
     header {
-      background: #004080;
+      background: #004080; /* fundo azul */
       color: white;
       padding: 15px;
       display: flex;
       align-items: center;
+      position: fixed; /* fixa no topo */
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
     }
 
     header a {
+      position: absolute; /* botão voltar no canto esquerdo */
+      left: 15px;
+      top: 15px;
       text-decoration: none;
       color: white;
       font-weight: bold;
-      margin-right: 20px;
       background: #0066cc;
       padding: 8px 12px;
       border-radius: 5px;
@@ -38,18 +45,20 @@
       background: #0099ff;
     }
 
+    header h1 {
+      margin: 0 auto;
+      text-align: center;
+      flex-grow: 1;
+      color: white; /* título branco */
+    }
 
     .container {
       background: white;
-      padding: 30px;
+      padding: 25px;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       width: 350px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #333;
+      margin-top: 100px; /* espaço para não ficar atrás do header */
     }
 
     label {
@@ -65,29 +74,24 @@
       margin-top: 5px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      transition: border-color 0.3s;
-    }
-
-    input:focus {
-      border-color: #4facfe;
-      outline: none;
     }
 
     button {
       margin-top: 20px;
       width: 100%;
       padding: 12px;
-      background: #4facfe;
-      color: white;
+      background: #004080;   /* fundo azul */
+      color: white;          /* texto branco */
       border: none;
       border-radius: 5px;
       font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
       transition: background 0.3s;
     }
 
     button:hover {
-      background: #00c6fb;
+      background: #0066cc;   /* azul mais claro ao passar o mouse */
     }
 
     #resposta {
@@ -102,62 +106,58 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    
   <header>
     <a href="index.html">← Voltar</a>
+    <h1>Cadastro de Usuário</h1>
   </header>
-    <h1>Criar Cliente</h1>
-    <form id="form">
-      <label for="nome">Nome</label>
-      <input type="text" id="nome" required>
 
-      <label for="cpf">CPF</label>
-      <input type="text" id="cpf" required>
+  <div class="container">
+    <form id="formCadastro">
+      <label for="username">Usuário</label>
+      <input type="text" id="username" required>
 
-      <label for="endereco">Endereço</label>
-      <input type="text" id="endereco" required>
+      <label for="password">Senha</label>
+      <input type="password" id="password" required>
 
-      <label for="nascimento">Data Nascimento</label>
-      <input type="date" id="data_nascimento" required>
-
-      <button type="submit">Enviar</button>
+      <button type="submit">Cadastrar</button>
     </form>
 
     <div id="resposta"></div>
-
   </div>
 
   <script>
-    const API_URL = "http://localhost:8000/banco/clientes";
+    const API_AUTH = "http://localhost:8000/auth/register"; // ajuste conforme sua rota
 
-    async function criarCliente(nome, cpf, endereco, data_nascimento) {
-      const cliente = { nome, cpf, endereco, data_nascimento };
+    async function cadastrar(username, password) {
+      const dados = { username, password };
 
-      const resp = await fetch(API_URL, {
+      const resp = await fetch(API_AUTH, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(cliente),
+        body: JSON.stringify(dados),
       });
 
       if (!resp.ok) {
-        throw new Error("Erro ao criar cliente");
+        throw new Error("Erro ao cadastrar usuário");
       }
 
       return resp.json();
     }
 
-    document.getElementById("form").addEventListener("submit", async (event) => {
+    document.getElementById("formCadastro").addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const nome = document.getElementById("nome").value;
-      const cpf = document.getElementById("cpf").value;
-      const endereco = document.getElementById("endereco").value;
-      const nascimento = document.getElementById("data_nascimento").value;
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
 
       try {
-        const data = await criarCliente(nome, cpf, endereco, nascimento);
-        document.getElementById("resposta").textContent = "Cliente criado: " + JSON.stringify(data);
+        const data = await cadastrar(username, password);
+        document.getElementById("resposta").textContent = "Usuário cadastrado: " + JSON.stringify(data);
+
+        // Redireciona para login.html após cadastro
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
       } catch (error) {
         document.getElementById("resposta").textContent = "Erro: " + error.message;
       }

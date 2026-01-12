@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Criar Cliente</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    header {
+      background: #004080; /* fundo azul */
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      position: fixed; /* fixa no topo */
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    header a {
+      position: absolute; /* botão voltar no canto esquerdo */
+      left: 15px;
+      top: 15px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      background: #0066cc;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    header a:hover {
+      background: #0099ff;
+    }
+
+    header h1 {
+      margin: 0 auto;
+      text-align: center;
+      flex-grow: 1;
+      color: white; /* texto branco */
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 350px;
+      margin-top: 100px; /* espaço para não ficar atrás do header */
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #4facfe;
+      outline: none;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #004080;   /* fundo azul */
+      color: white;          /* texto branco */
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0066cc;   /* azul mais claro ao passar o mouse */
+    }
+
+    #resposta {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html">← Voltar</a>
+    <h1>Criar Cliente</h1>
+  </header>
+
+  <div class="container">
+    <form id="form">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" required>
+
+      <label for="cpf">CPF</label>
+      <input type="text" id="cpf" required>
+
+      <label for="endereco">Endereço</label>
+      <input type="text" id="endereco" required>
+
+      <label for="nascimento">Data Nascimento</label>
+      <input type="date" id="data_nascimento" required>
+
+      <button type="submit">Criar Cliente</button>
+    </form>
+
+    <div id="resposta"></div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:8000/banco/clientes";
+
+    async function criarCliente(nome, cpf, endereco, data_nascimento) {
+      const cliente = { nome, cpf, endereco, data_nascimento };
+
+      const resp = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cliente),
+      });
+
+      if (!resp.ok) {
+        throw new Error("Erro ao criar cliente");
+      }
+
+      return resp.json();
+    }
+
+    document.getElementById("form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const nome = document.getElementById("nome").value;
+      const cpf = document.getElementById("cpf").value;
+      const endereco = document.getElementById("endereco").value;
+      const nascimento = document.getElementById("data_nascimento").value;
+
+      try {
+        const data = await criarCliente(nome, cpf, endereco, nascimento);
+        document.getElementById("resposta").textContent = "Cliente criado: " + JSON.stringify(data);
+      } catch (error) {
+        document.getElementById("resposta").textContent = "Erro: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>

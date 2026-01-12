@@ -44,6 +44,367 @@ app.mount("/teste3", StaticFiles(directory="teste3"), name="teste3")
 '''
 
 
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Criar Conta</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 350px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #4facfe;
+      outline: none;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00c6fb;
+    }
+
+    #resposta {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+      word-wrap: break-word;
+    }
+
+    .voltar {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .voltar a {
+      text-decoration: none;
+      color: #004080;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html">← Voltar</a>
+    <h1>Criar Conta</h1>
+    <form id="form">
+      <label for="numero">Número da Conta</label>
+      <input type="text" id="numero" required>
+
+      <label for="cpf">CPF do Cliente</label>
+      <input type="text" id="cpf" required>
+
+      <button type="submit">Criar Conta</button>
+    </form>
+
+    <div id="resposta"></div>
+
+    <div class="voltar">
+      <a href="index.html">←Voltar para Página Principal</a>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:8000/banco/contas/";
+    
+    async function criarConta(numero, cpf) {
+      const conta = { numero, cpf };
+
+      const resp = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(conta),
+      });
+
+      if (!resp.ok) {
+        throw new Error("Erro ao criar conta");
+      }
+
+      return resp.json();
+    }
+
+    document.getElementById("form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const numero = document.getElementById("numero").value;
+      const cpf = document.getElementById("cpf").value;
+
+      try {
+        const data = await criarConta(numero, cpf);
+        document.getElementById("resposta").textContent = "Conta criada com sucesso: " + JSON.stringify(data);
+      } catch (error) {
+        document.getElementById("resposta").textContent = "Erro: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Criar Cliente</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    header {
+      background: #004080;
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    header a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      margin-right: 20px;
+      background: #0066cc;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    header a:hover {
+      background: #0099ff;
+    }
+
+    
+    h1 {
+      margin: 0;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 350px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #4facfe;
+      outline: none;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #004080;   /* fundo azul */
+      color: white;          /* texto branco */
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+  background: #0066cc;   /* azul mais claro ao passar o mouse */
+}
+
+
+    #resposta {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+  <header>
+    <a href="index.html">← Voltar</a>
+    <h1>Criar Cliente</h1>
+  </header>
+
+    <form id="form">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" required>
+
+      <label for="cpf">CPF</label>
+      <input type="text" id="cpf" required>
+
+      <label for="endereco">Endereço</label>
+      <input type="text" id="endereco" required>
+
+      <label for="nascimento">Data Nascimento</label>
+      <input type="date" id="data_nascimento" required>
+
+      <button type="submit">Enviar</button>
+    </form>
+
+    <div id="resposta"></div>
+
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:8000/banco/clientes";
+
+    async function criarCliente(nome, cpf, endereco, data_nascimento) {
+      const cliente = { nome, cpf, endereco, data_nascimento };
+
+      const resp = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cliente),
+      });
+
+      if (!resp.ok) {
+        throw new Error("Erro ao criar cliente");
+      }
+
+      return resp.json();
+    }
+
+    document.getElementById("form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const nome = document.getElementById("nome").value;
+      const cpf = document.getElementById("cpf").value;
+      const endereco = document.getElementById("endereco").value;
+      const nascimento = document.getElementById("data_nascimento").value;
+
+      try {
+        const data = await criarCliente(nome, cpf, endereco, nascimento);
+        document.getElementById("resposta").textContent = "Cliente criado: " + JSON.stringify(data);
+      } catch (error) {
+        document.getElementById("resposta").textContent = "Erro: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00c6fb;
+    }
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
