@@ -1,5 +1,6 @@
 from app.models.models_cliente import Cliente
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from app.database.session import AsyncSession
 from app.models.models_conta import Conta
 
@@ -21,3 +22,17 @@ class ServiceGet:
             return 'contas_nao_encontradas'
         
         return contas
+    
+    @staticmethod
+    async def lista_cliente_contas(cliente_id: int,session: AsyncSession):
+        result = await session.execute(
+            select(Cliente).where(Cliente.id == cliente_id)
+            .options(selectinload(Cliente.contas))
+            )
+        cliente = result.scalars().first()
+        if not cliente:
+            return 'cliente_nao_encontrado'
+        
+        return cliente
+
+        

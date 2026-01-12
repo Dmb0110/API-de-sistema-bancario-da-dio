@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+asyncpg          # driver async para PostgreSQL
+python-dotenv     # variáveis de ambiente
+python-jose[cryptography]   # JWT
+passlib[bcrypt]   # hash de senha
+bcrypt            # usado pelo passlib
+alembic          # migrations

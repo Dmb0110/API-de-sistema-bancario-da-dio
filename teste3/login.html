@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 350px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00c6fb;
+    }
+
+    #resposta {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+      word-wrap: break-word;
+    }
+
+    .voltar {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .voltar a {
+      text-decoration: none;
+      color: #004080;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Login</h1>
+    <form id="formLogin">
+      <label for="username">Usuário</label>
+      <input type="text" id="username" required>
+
+      <label for="password">Senha</label>
+      <input type="password" id="password" required>
+
+      <button type="submit">Entrar</button>
+    </form>
+
+    <div id="resposta"></div>
+
+    <div class="voltar">
+      <a href="index.html">← Voltar para Página Principal</a>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:8000/auth/login"; // ajuste conforme sua rota
+
+    async function login(username, password) {
+      const dados = { username, password };
+
+      const resp = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados),
+      });
+
+      if (!resp.ok) {
+        throw new Error("Erro ao fazer login");
+      }
+
+      return resp.json();
+    }
+
+    document.getElementById("formLogin").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const data = await login(username, password);
+        document.getElementById("resposta").textContent = "Login realizado com sucesso!";
+
+        if (data.access_token) {
+          // guarda token no localStorage
+          localStorage.setItem("token", data.access_token);
+
+          // redireciona para fazer_transacao.html
+          setTimeout(() => {
+            window.location.href = "fazer_transacao.html";
+          }, 1000); // espera 1 segundo para mostrar mensagem antes de redirecionar
+        }
+      } catch (error) {
+        document.getElementById("resposta").textContent = "Erro: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>

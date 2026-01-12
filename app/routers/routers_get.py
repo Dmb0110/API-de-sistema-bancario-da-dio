@@ -41,3 +41,20 @@ async def listar(
     
     return contas
 
+
+@router.get(
+        '/cliente/{cliente_id}',
+        summary="Exibe um cliente e suas contas",
+        response_model=ClienteOut,
+        status_code=status.HTTP_200_OK
+)
+async def listar(
+    cliente_id: int,
+    session: AsyncSession = Depends(get_session)
+):
+    cliente = await ServiceGet.lista_cliente_contas(cliente_id,session)
+    if cliente == 'cliente_nao_encontrado':    
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Cliente nao encontrado')
+    
+    return cliente
+    

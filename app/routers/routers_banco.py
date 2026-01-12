@@ -46,12 +46,17 @@ async def criar2(
     session: AsyncSession = Depends(get_session)
 ):
     result = await ServiceBancario.criar_conta(criar,session)
-    if result ==' cliente_nao_encontrado':
+    if result == 'cliente_nao_encontrado':
         raise HTTPException(status_code=404,detail='Cliente nao encontrado')
     
     if result == 'conta_ja_existe':
         raise HTTPException(status_code=400,detail='Conta ja existe')
     # 🔑 Monta manualmente os campos extras 
+    if isinstance(result,str):
+        raise HTTPException(status_code=500, detail=f'Erro inesperado: {result}')
+    
+    return ContaOut.model_validate(result)
+    '''
     return ContaOut(
         numero=result.numero,
         agencia=result.agencia,
@@ -59,6 +64,7 @@ async def criar2(
         titular=result.cliente.nome if result.cliente else None, 
         historico=[TransacaoOut.model_validate(t) for t in result.transacoes] if hasattr(result, "transacoes") else [] 
     )
+    '''
 
 
 @router.post(

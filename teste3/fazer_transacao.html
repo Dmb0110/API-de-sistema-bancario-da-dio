@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Criar Transação</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #004080;
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    header a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      margin-right: 20px;
+      background: #0066cc;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    header a:hover {
+      background: #0099ff;
+    }
+
+    h1 {
+      margin: 0;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .container {
+      margin: 30px auto;
+      width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00c6fb;
+    }
+
+    #resposta {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+      word-wrap: break-word;
+    }
+
+    #listaContas {
+      margin-top: 20px;
+      padding: 10px;
+      background: #e6f7ff;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #004080;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html">← Voltar</a>
+    <h1>Criar Transação</h1>
+  </header>
+
+  <div class="container">
+    <form id="formTransacao">
+      <label for="numero">Número da Conta</label>
+      <input type="text" id="numero" required>
+
+      <label for="tipo">Tipo de Transação</label>
+      <select id="tipo" required>
+        <option value="">Selecione...</option>
+        <option value="deposito">Depósito</option>
+        <option value="saque">Saque</option>
+        <option value="transferencia">Transferência</option>
+      </select>
+
+      <label for="valor">Valor</label>
+      <input type="number" id="valor" step="0.01" required>
+
+      <button type="submit">Enviar Transação</button>
+    </form>
+
+    <div id="resposta"></div>
+
+    <h3>📋 Contas disponíveis</h3>
+    <div id="listaContas">Carregando contas...</div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:8000/banco/transacoes";
+    const CONTAS_URL = "http://localhost:8000/get/contas";
+
+    // Criar transação
+    async function criarTransacao(numero, tipo, valor) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const transacao = { 
+        numero_conta: parseInt(numero),
+        tipo_de_transacao: tipo, 
+        valor: parseFloat(valor) 
+      };
+
+      const resp = await fetch(API_URL, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(transacao),
+      });
+
+      if (!resp.ok) {
+        throw new Error("Erro ao criar transação");
+      }
+
+      return resp.json();
+    }
+
+    // Listar contas
+    async function listarContas() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const resp = await fetch(CONTAS_URL, {
+          method: "GET",
+          headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (!resp.ok) {
+          throw new Error("Erro ao carregar contas");
+        }
+
+        const contas = await resp.json();
+        const listaDiv = document.getElementById("listaContas");
+
+        if (contas.length === 0) {
+          listaDiv.textContent = "Nenhuma conta encontrada.";
+          return;
+        }
+
+        listaDiv.innerHTML = contas.map(c => 
+          `<p><strong>Número:</strong> ${c.numero} | <strong>Titular:</strong> ${c.titular}</p>`
+        ).join("");
+      } catch (error) {
+        document.getElementById("listaContas").textContent = "Erro: " + error.message;
+      }
+    }
+
+    // Evento do formulário
+    document.getElementById("formTransacao").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const numero = document.getElementById("numero").value;
+      const tipo = document.getElementById("tipo").value;
+      const valor = document.getElementById("valor").value;
+
+      try {
+        const data = await criarTransacao(numero, tipo, valor);
+        document.getElementById("resposta").textContent = "Transação criada: " + JSON.stringify(data);
+      } catch (error) {
+        document.getElementById("resposta").textContent = "Erro: " + error.message;
+      }
+    });
+
+    // Carregar contas ao abrir a página
+    listarContas();
+  </script>
+</body>
+</html>

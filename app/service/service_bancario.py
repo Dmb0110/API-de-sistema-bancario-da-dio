@@ -38,7 +38,7 @@ class ServiceBancario:
         result = await session.execute(select(Cliente).where(Cliente.cpf == criar.cpf))
         cliente = result.scalars().first()
         if not cliente:
-            return 'cliente_nao_econtrado'
+            return 'cliente_nao_encontrado'
         
         result = await session.execute(select(Conta).where(Conta.numero == criar.numero))
         conta_existe = result.scalars().first()
@@ -91,17 +91,17 @@ class ServiceBancario:
         )
         conta = result.scalars().first()
         if not conta:
-            return 'conta_nao_encontrada'
+            return MensagemOut(mesagem='conta nao encontrada')
        
         if transacao.tipo_de_transacao == "deposito":
             conta.saldo += transacao.valor
         elif transacao.tipo_de_transacao == "saque":
             if conta.saldo < transacao.valor:
-                return 'Saldo insuficiente'
+                return MensagemOut(mensagem='Saldo insuficiente')
             
             conta.saldo -= transacao.valor
         else:
-            return 'tipo_invalido'
+            return MensagemOut(mensagem='tipo_invalido')
     
         nova_transacao = Transacao(
             tipo_de_transacao=transacao.tipo_de_transacao,

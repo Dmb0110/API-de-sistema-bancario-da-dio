@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Clientes e Contas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #004080;
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    header a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      background: #0066cc;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    header a:hover {
+      background: #0099ff;
+    }
+
+    h1 {
+      margin: 0 auto;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .container {
+      margin: 100px auto 30px auto;
+      width: 600px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00c6fb;
+    }
+
+    #listaClientes, #resultado {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html">← Voltar</a>
+    <h1>Clientes e Contas</h1>
+  </header>
+
+  <div class="container">
+    <h2>📋 IDs de Clientes</h2>
+    <div id="listaClientes">Carregando clientes...</div>
+
+    <h2>🔍 Buscar Cliente por ID</h2>
+    <form id="formBusca">
+      <label for="clienteId">ID do Cliente</label>
+      <input type="number" id="clienteId" required>
+      <button type="submit">Buscar</button>
+    </form>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    const CLIENTES_URL = "http://localhost:8000/get/clientes";
+    const CLIENTE_URL = "http://localhost:8000/get/cliente"; // rota para cliente específico
+
+    // Listar todos os clientes (apenas IDs)
+    async function listarClientes() {
+      try {
+        const resp = await fetch(CLIENTES_URL);
+        if (!resp.ok) throw new Error("Erro ao carregar clientes");
+
+        const clientes = await resp.json();
+        const listaDiv = document.getElementById("listaClientes");
+
+        if (clientes.length === 0) {
+          listaDiv.textContent = "Nenhum cliente encontrado.";
+          return;
+        }
+
+        // Mostra ID e Nome para facilitar
+        listaDiv.innerHTML = clientes.map(c => `<p><strong>ID:</strong> ${c.id} | <strong>Nome:</strong> ${c.nome}</p>`).join("");
+      } catch (error) {
+        document.getElementById("listaClientes").textContent = "Erro: " + error.message;
+      }
+    }
+
+    // Buscar cliente por ID e mostrar suas contas
+    async function buscarCliente(id) {
+      try {
+        const respCliente = await fetch(`${CLIENTE_URL}/${id}`);
+        if (!respCliente.ok) throw new Error("Cliente não encontrado");
+
+        const cliente = await respCliente.json();
+
+        const resultadoDiv = document.getElementById("resultado");
+        resultadoDiv.innerHTML = `
+          <h3>Dados do Cliente</h3>
+          <p><strong>ID:</strong> ${cliente.id}</p>
+          <p><strong>Nome:</strong> ${cliente.nome}</p>
+          <p><strong>CPF:</strong> ${cliente.cpf}</p>
+          <p><strong>Endereço:</strong> ${cliente.endereco}</p>
+          <p><strong>Nascimento:</strong> ${cliente.data_nascimento}</p>
+
+          <h3>Contas</h3>
+          ${cliente.contas && cliente.contas.length > 0 
+            ? cliente.contas.map(ct => `<p><strong>Número:</strong> ${ct.numero} | <strong>Agência:</strong> ${ct.agencia} | <strong>Saldo:</strong> ${ct.saldo}</p>`).join("")
+            : "<p>Esse cliente não possui contas.</p>"}
+        `;
+      } catch (error) {
+        document.getElementById("resultado").textContent = "Erro: " + error.message;
+      }
+    }
+
+    document.getElementById("formBusca").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const id = document.getElementById("clienteId").value;
+      buscarCliente(id);
+    });
+
+    listarClientes();
+  </script>
+</body>
+</html>
