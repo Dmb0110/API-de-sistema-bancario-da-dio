@@ -21,8 +21,6 @@ app.add_middleware(
 )
 
 
-
-
 # Inicializa o banco de forma assíncrona
 @app.on_event("startup")
 async def startup_event():
@@ -32,8 +30,6 @@ async def startup_event():
 
 # Inclui as rotas definidas em routers_bancario
 app.include_router(api_router)
-
-
 
 # Monta a pasta "teste3" como estática
 app.mount("/teste3", StaticFiles(directory="teste3"), name="teste3")

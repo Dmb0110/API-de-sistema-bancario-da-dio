@@ -1,0 +1,32 @@
+# Arquivo de override para desenvolvimento local
+# Use com: docker-compose -f docker-compose.yml -f docker-compose.override.yml up
+
+services:
+  api:
+    # Em desenvolvimento, montar volume para recarregar código
+    volumes:
+      - .:/app
+    environment:
+      # Variáveis adicionais para desenvolvimento
+      DEBUG: "true"
+    ports:
+      - "8000:8000"
+    # Manter container rodando mesmo com erro
+    restart: unless-stopped
+
+  postgres:
+    # Em desenvolvimento, port mais fácil de acessar
+    ports:
+      - "5432:5432"
+    environment:
+      # Logs verbosos
+      POSTGRES_INITDB_ARGS: "-c log_statement=all"
+
+  pgadmin:
+    # Desabilitar auto-login para segurança
+    environment:
+      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
+      PGADMIN_CONFIG_COOKIE_DEFAULT_SECURE: "False"
+      PGADMIN_CONFIG_COOKIE_DEFAULT_SAMESITE: "Lax"
+    ports:
+      - "5050:80"
