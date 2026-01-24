@@ -7,12 +7,12 @@ python-jose[cryptography]   # JWT
 passlib[bcrypt]   # hash de senha
 bcrypt            # usado pelo passlib
 alembic          # migrations
-gunicorn         # WSGI server para produção
 
 # Dependências para testes
-pytest>=7.0.0
-pytest-asyncio>=0.21.0
-httpx>=0.23.0
-aiosqlite>=0.17.0
+pytest
+pytest-asyncio
+httpx
+aiosqlite
 pydantic-settings
 psycopg2-binary
+argon2-cffi

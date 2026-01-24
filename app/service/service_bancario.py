@@ -119,4 +119,4 @@ class ServiceBancario:
         session.add(nova_transacao)
         await session.commit()
         await session.refresh(nova_transacao)
-        return MensagemOut(mensagem=f'{transacao.tipo_de_transacao.capitalize()}realizada_com_sucesso')
+        return MensagemOut(mensagem=f'{transacao.tipo_de_transacao.capitalize()}realizado com sucesso')

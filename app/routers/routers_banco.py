@@ -11,7 +11,9 @@ from app.autenticacao_bancaria.auth import verificar_token
 router = APIRouter()  # Cria o roteador para agrupar as rotas da API
 
 # Rota protegida que exige autenticação via JWT
-@router.get("/protected")
+@router.get(
+        "/protected"
+    )
 async def protected_route(username: str = Depends(verificar_token)):
     return {"msg": f"Bem-vindo {username}, você acessou uma rota protegida!"}
 

@@ -15,7 +15,7 @@
 - [Exemplos de Uso](#exemplos-de-uso)
 - [Testes](#testes)
 
----
+----------------------------
 
 ## 🎯 Visão Geral
 
@@ -28,7 +28,7 @@ Esta é uma API RESTful completa de um sistema bancário desenvolvida com **Fast
 - ✅ Listagem de clientes e contas
 - ✅ Consulta de histórico de transações
 
----
+------------------------------
 
 ## 🛠️ Tecnologias
 
@@ -42,7 +42,7 @@ Esta é uma API RESTful completa de um sistema bancário desenvolvida com **Fast
 - **pytest** - Framework de testes
 - **httpx** - Cliente HTTP assíncrono para testes
 
----
+------------------------------
 
 ## 📦 Instalação
 
@@ -85,7 +85,7 @@ uvicorn app.main:app --reload
 
 A API estará disponível em: `http://localhost:8000`
 
----
+--------------------------
 
 ## ⚙️ Configuração
 
@@ -115,7 +115,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 | `ALGORITHM` | Algoritmo de codificação JWT | `HS256` |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | Minutos até token expirar | `30` |
 
----
+--------------------------
 
 g## � Docker (Recomendado)
 
@@ -141,8 +141,8 @@ docker-compose ps
 
 - **API (Swagger):** http://localhost:8000/docs
 - **API (ReDoc):** http://localhost:8000/redoc
-- **pgAdmin:** http://localhost:5050 (admin@example.com / admin)
 
+-------------------------
 ### Comandos Docker Úteis
 
 ```bash
@@ -160,26 +160,9 @@ docker-compose exec postgres psql -U bancario -d banco_bancario
 
 # Parar serviços
 docker-compose down
-```
+--------------------------------
+### Estrutura do projeto
 
-### Usar Makefile (mais fácil)
-
-```bash
-make help        # Ver todos os comandos
-make setup       # Setup inicial
-make up          # Iniciar serviços
-make down        # Parar serviços
-make logs        # Ver logs
-make test        # Rodar testes
-make restart     # Reiniciar
-make clean       # Limpar tudo
-```
-
-Para detalhes completos, consulte [DOCKER.md](DOCKER.md)
-
----
-
-```
 app/
 ├── __init__.py
 ├── main.py                          # Aplicação principal FastAPI
@@ -199,37 +182,54 @@ app/
 │
 ├── models/
 │   ├── __init__.py
-│   ├── models_auth.py              # Modelo User
-│   ├── models_cliente.py           # Modelo Cliente
-│   ├── models_conta.py             # Modelo Conta
-│   └── models_transacao.py         # Modelo Transacao
+│   ├── models_auth.py               # Modelo User
+│   ├── models_cliente.py            # Modelo Cliente
+│   ├── models_conta.py              # Modelo Conta
+│   └── models_transacao.py          # Modelo Transacao
 │
 ├── routers/
 │   ├── __init__.py
-│   ├── routers_registro_login.py   # Rotas de autenticação
-│   ├── routers_banco.py            # Rotas principais de banco
-│   └── routers_get.py              # Rotas de listagem/consulta
+│   ├── routers_registro_login.py    # Rotas de autenticação
+│   ├── routers_banco.py             # Rotas principais de banco
+│   └── routers_get.py               # Rotas de listagem/consulta
 │
 ├── schemas/
 │   ├── __init__.py
-│   ├── schemas_auth.py             # Schemas de autenticação
-│   ├── schemas_do_cliente.py       # Schemas de cliente
-│   ├── schemas_da_conta.py         # Schemas de conta
-│   └── schemas_da_transacao.py     # Schemas de transação
+│   ├── schemas_auth.py              # Schemas de autenticação
+│   ├── schemas_do_cliente.py        # Schemas de cliente
+│   ├── schemas_da_conta.py          # Schemas de conta
+│   └── schemas_da_transacao.py      # Schemas de transação
 │
 └── service/
     ├── __init__.py
-    ├── service_registro_login.py   # Lógica de autenticação
-    ├── service_bancario.py         # Lógica de operações bancárias
-    └── service_get.py              # Lógica de listagem
+    ├── service_registro_login.py    # Lógica de autenticação
+    ├── service_bancario.py          # Lógica de operações bancárias
+    └── service_get.py               # Lógica de listagem
 
-tests2/                             # Testes simples (1 por rota)
-test_main.py                        # Suite completa de testes
-conftest.py                         # Configuração de testes
-pytest.ini                          # Configuração do pytest
-```
+# Infraestrutura e utilitários
+Dockerfile                           # Imagem da aplicação
+docker-compose.yml                   # Orquestração de serviços (API, DB, etc.)
+.dockerignore                        # Arquivos ignorados no build
+.env                                 # Variáveis de ambiente
+wait-for-it.sh                       # Script para aguardar dependências (ex.: DB)
 
----
+# Banco e migrações
+alembic.ini                          # Configuração do Alembic
+migrations/                          # Diretório de migrações do Alembic
+db.sqlite3:                           # Banco SQLite local (se usado)
+
+# Documentação e dependências
+README.md                            # Documentação do projeto
+requirements.txt                     # Dependências Python
+
+# Testes e ambiente
+tests2/                              # Testes com pytest
+venv/                                # Ambiente virtual Python
+
+# Frontend
+front_sistem_bancario/                               # Código do frontend (HTML/CSS/JS ou framework)
+
+------------------------------------
 
 ## 🗄️ Modelos de Dados
 
@@ -246,7 +246,7 @@ class User(Base):
 
 **Relacionamentos:** Nenhum (tabela simples de usuários)
 
----
+-------------------------------
 
 ### 2. Cliente
 
@@ -268,7 +268,7 @@ class Cliente(Base):
 - CPF deve ser único no banco
 - Todos os campos são obrigatórios
 
----
+------------------------------
 
 ### 3. Conta
 
@@ -317,7 +317,7 @@ class Transacao(Base):
 - Tipo deve ser "deposito" ou "saque"
 - Valor deve ser positivo
 
----
+------------------------------
 
 ## 🚀 Rotas da API
 
@@ -325,7 +325,7 @@ class Transacao(Base):
 - URL Base: `http://localhost:8000`
 - Documentação: `http://localhost:8000/docs`
 
----
+------------------------------
 
 ### 🔐 AUTENTICAÇÃO (/auth)
 
@@ -358,7 +358,7 @@ POST /auth/register
 
 **Função Responsável:** `ServiceAuth.registrar_usuario()`
 
----
+--------------------------------
 
 #### 2. **Login do Usuário**
 ```http
@@ -389,7 +389,7 @@ POST /auth/login
 
 **Função Responsável:** `ServiceAuth.logar_usuario()`
 
----
+------------------------------
 
 ### 🏦 OPERAÇÕES BANCÁRIAS (/banco)
 
@@ -428,7 +428,7 @@ POST /banco/clientes/
 
 **Função Responsável:** `ServiceBancario.criar_cliente()`
 
----
+-------------------------------
 
 #### 2. **Criar Conta Bancária**
 ```http
@@ -463,7 +463,7 @@ POST /banco/contas/
 
 **Função Responsável:** `ServiceBancario.criar_conta()`
 
----
+-------------------------------
 
 #### 3. **Consultar Conta**
 ```http
@@ -495,7 +495,7 @@ GET /banco/contas/{numero}
 
 **Função Responsável:** `ServiceBancario.consultar_conta()`
 
----
+--------------------------------
 
 #### 4. **Realizar Transação (Depósito/Saque)**
 ```http
@@ -537,7 +537,7 @@ Authorization: Bearer {access_token}
 
 **Função Responsável:** `ServiceBancario.criar_transacao()`
 
----
+--------------------------------
 
 #### 5. **Rota Protegida (Teste de Autenticação)**
 ```http
@@ -561,7 +561,7 @@ Authorization: Bearer {access_token}
 **Possíveis Erros:**
 - `403` - Não autenticado ou token inválido/expirado
 
----
+--------------------------------
 
 ### 📊 LISTAGEM E CONSULTA (/get)
 
@@ -597,7 +597,7 @@ GET /get/clientes
 
 **Função Responsável:** `ServiceGet.listar_clientes()`
 
----
+------------------------------
 
 #### 2. **Listar Todas as Contas**
 ```http
@@ -622,7 +622,7 @@ GET /get/contas
 
 **Função Responsável:** `ServiceGet.listar_contas()`
 
----
+-------------------------------
 
 #### 3. **Consultar Cliente Específico com Contas**
 ```http
@@ -657,7 +657,7 @@ GET /get/cliente/{cliente_id}
 
 **Função Responsável:** `ServiceGet.lista_cliente_contas()`
 
----
+-------------------------------
 
 ## 🔧 Funções de Serviço
 
@@ -686,7 +686,7 @@ GET /get/cliente/{cliente_id}
   - Se válido: gera JWT token
   - Retorna token de acesso
 
----
+------------------------------
 
 ### ServiceBancario (service_bancario.py)
 
@@ -748,7 +748,7 @@ GET /get/cliente/{cliente_id}
   - Commit no banco
   - Retorna mensagem de sucesso
 
----
+------------------------------
 
 ### ServiceGet (service_get.py)
 
@@ -781,7 +781,7 @@ GET /get/cliente/{cliente_id}
   - Se não encontrado: retorna `'cliente_nao_encontrado'`
   - Caso contrário: retorna cliente com suas contas
 
----
+------------------------------
 
 ## 🔐 Autenticação
 
@@ -831,7 +831,7 @@ curl -X GET http://localhost:8000/banco/protected \
   -H "Authorization: Bearer seu_token_aqui"
 ```
 
----
+-------------------------------
 
 ## 📝 Exemplos de Uso
 
@@ -921,7 +921,7 @@ curl -X GET http://localhost:8000/banco/contas/123456
 curl -X GET http://localhost:8000/get/clientes
 ```
 
----
+--------------------------------
 
 ## 🧪 Testes
 
@@ -946,15 +946,6 @@ pytest --cov=app --cov-report=html
 
 ### Estrutura de Testes
 
-**test_main.py** - Suite completa com 41 testes
-- Testes de autenticação
-- Testes de clientes
-- Testes de contas
-- Testes de transações
-- Testes de rotas protegidas
-- Testes de fluxo completo
-- Testes de validações
-
 **tests2/** - Um teste simples por rota
 - test_auth_register.py
 - test_auth_login.py
@@ -967,14 +958,7 @@ pytest --cov=app --cov-report=html
 - test_get_listar_contas.py
 - test_get_consultar_cliente.py
 
-### Banco de Testes
-
-Os testes usam **SQLite em memória** para:
-- Isolamento entre testes
-- Rapidez de execução
-- Sem necessidade de BD externo
-
----
+-----------------------------
 
 ## 📊 Diagramas
 
@@ -1028,7 +1012,7 @@ Persiste Transacao e Conta (com novo saldo)
 Response: MensagemOut (200 OK)
 ```
 
----
+------------------------------
 
 ## 🐛 Códigos de Erro Comuns
 
@@ -1043,57 +1027,47 @@ Response: MensagemOut (200 OK)
 | 422 | Unprocessable Entity | Dados inválidos no request body |
 | 500 | Internal Server Error | Erro no servidor |
 
----
+------------------------------
 
 ## 📚 Dependências Principais
 
 ```
-fastapi              # Framework web
-uvicorn[standard]    # Servidor ASGI
-sqlalchemy           # ORM
-asyncpg              # Driver PostgreSQL assíncrono
-python-dotenv        # Variáveis de ambiente
-python-jose          # JWT
-passlib[bcrypt]      # Hash de senhas
-bcrypt               # Usado pelo passlib
-alembic              # Migrations
-pytest               # Testes
-pytest-asyncio       # Testes assíncronos
-httpx                # Cliente HTTP para testes
-aiosqlite            # SQLite assíncrono para testes
-```
+fastapi
+uvicorn[standard]
+sqlalchemy
+asyncpg          # driver async para PostgreSQL
+python-dotenv     # variáveis de ambiente
+python-jose[cryptography]   # JWT
+passlib[bcrypt]   # hash de senha
+bcrypt            # usado pelo passlib
+alembic          # migrations
 
----
+# Dependências para testes
+pytest
+pytest-asyncio
+httpx
+aiosqlite
+pydantic-settings
+psycopg2-binary
+argon2-cffi
 
-## 🚀 Próximas Melhorias Sugeridas
-
-- [ ] Adicionar operação de transferência entre contas
-- [ ] Implementar filtros de data no histórico de transações
-- [ ] Adicionar upload de documentos de cliente
-- [ ] Implementar limites de transação
-- [ ] Adicionar logs de segurança
-- [ ] Implementar rate limiting
-- [ ] Adicionar email de confirmação
-- [ ] Implementar dashboard de análises
-- [ ] Adicionar relatórios em PDF
-- [ ] Implementar autenticação com 2FA
-
----
+-------------------------------
 
 ## 📞 Suporte
 
 Para dúvidas ou issues, consulte:
 - Documentação interativa: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
-- Código das rotas: pasta `app/routers/`
-- Código dos serviços: pasta `app/service/`
 
----
+-------------------------------
 
 ## 📄 Licença
 
 Este projeto é um exercício educacional da DIO (Digital Innovation One).
 
----
+-------------------------------
 
 **Última atualização:** 12 de Janeiro de 2026
+
+## Autor
+- David (Desenvolvedor do projeto)

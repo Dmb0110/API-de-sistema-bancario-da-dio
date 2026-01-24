@@ -7,14 +7,17 @@ import os
 
 # Configurações críticas de segurança: em produção, SECRET_KEY deve vir de variável de ambiente segura
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
+
 ALGORITHM = "HS256"
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Contexto de hashing configurado com bcrypt (padrão seguro e amplamente usado)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Contexto de hashing configurado com argon2 (padrão seguro e amplamente usado)
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 security = HTTPBearer()
 
 # Hash de senha para persistência segura (não armazenar senhas em texto puro)
+
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
