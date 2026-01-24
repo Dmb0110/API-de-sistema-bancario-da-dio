@@ -2,7 +2,9 @@
 Teste simples: GET /get/cliente/{cliente_id}
 """
 import pytest
-
+'''
+pytest tests2/test_get_consultar_cliente.py -v
+'''
 
 @pytest.mark.asyncio
 async def test_consultar_cliente(client):

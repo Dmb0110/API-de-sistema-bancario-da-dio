@@ -2,7 +2,9 @@
 Teste simples: GET /get/contas
 """
 import pytest
-
+'''
+pytest tests2/test_get_listar_contas.py -v
+'''
 
 @pytest.mark.asyncio
 async def test_listar_contas(client):

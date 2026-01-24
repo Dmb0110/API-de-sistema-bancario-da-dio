@@ -3,6 +3,9 @@ Teste simples: GET /banco/contas/{conta}
 """
 import pytest
 
+'''
+pytest tests2/test_banco_consultar_conta.py -v
+'''
 
 @pytest.mark.asyncio
 async def test_consultar_conta(client):

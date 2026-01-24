@@ -3,6 +3,9 @@ Teste simples: POST /banco/contas
 """
 import pytest
 
+'''
+pytest tests2/test_banco_criar_conta.py -v
+'''
 
 @pytest.mark.asyncio
 async def test_criar_conta(client):

@@ -3,7 +3,9 @@ Teste simples: POST /banco/transacoes
 """
 import pytest
 
-
+'''
+pytest tests2/test_banco_transacao.py -v
+'''
 @pytest.mark.asyncio
 async def test_criar_transacao(client):
     """Teste da rota POST /banco/transacoes"""

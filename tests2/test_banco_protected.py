@@ -3,7 +3,9 @@ Teste simples: GET /banco/protected
 """
 import pytest
 
-
+'''
+pytest tests2/test_banco_protected.py -v
+'''
 @pytest.mark.asyncio
 async def test_rota_protegida(client):
     """Teste da rota GET /banco/protected"""
