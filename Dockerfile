@@ -1,48 +1,26 @@
-# Etapa 1: Builder - Instala dependências
-FROM python:3.11-slim as builder
 
-WORKDIR /app
-
-# Instala dependências de sistema necessárias
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copia requirements e instala dependências Python
-COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
-
-# Etapa 2: Runtime - Aplicação final
+# Usa uma imagem base com Python
 FROM python:3.11-slim
 
+# Define o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Instala dependências de runtime apenas (sem desenvolvimento)
-RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+# Copia os arquivos de dependência primeiro
+COPY requirements.txt .
 
-# Copia Python packages do builder
-COPY --from=builder /root/.local /root/.local
+# Instala as dependências
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Define PATH para usar o pip instalado
-ENV PATH=/root/.local/bin:$PATH \
-    PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
-
-# Copia código da aplicação
+# Copia o restante do código
 COPY . .
 
-# Cria usuário não-root para segurança
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
-USER appuser
+# Copiar script de espera
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
 
-# Expõe porta da aplicação
+# Expõe a porta que o Uvicorn vai usar
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')" || exit 1
+# Comando para iniciar o servidor FastAPI com Uvicorn
+CMD ["/wait-for-it.sh","db:5432","--","uvicorn","app.main:app","--host","0.0.0.0","--port","8000"]
 
-# Comando para iniciar a aplicação
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
